@@ -1,10 +1,13 @@
 body{
+
+  
   background-color: rgb(3, 41, 41);
   color:white;
  
 }
 
 .App{
+  font-size: 50px;
   display: flex;
   justify-content:space-evenly
   
@@ -27,6 +30,7 @@ a{
   display: flex;
   justify-content: center;
   color: red;
+  font-size: 35px;
 }
 
 .hiddenCantStop { 
@@ -34,5 +38,6 @@ a{
   display: flex;
   justify-content: center;
   color: red;
-  font-size: medium;
+  font-size: 50px;
+  
 }
