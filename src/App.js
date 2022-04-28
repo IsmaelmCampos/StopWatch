@@ -12,8 +12,9 @@ const App = () => {
   const timeout = useRef();
   const timeoutBreak = useRef();
   const started = useRef(false);
+  const startedBreak = useRef(false);
+  const display = useRef();
 
-  let displaySeconds = sValue;
   const increaseBreakValue = () => {
     const increasing = () => {
       setbValue(bValue + 1);
@@ -58,6 +59,9 @@ const App = () => {
       : decreasing();
   };
   // main session timer
+
+  let displaySeconds = session;
+
   const decreaseSessionEachSecond = () => {
     started.current = true;
     timeout.current = setTimeout(() => {
@@ -68,19 +72,24 @@ const App = () => {
   };
 
   const startBreakTimer = () => {
+    startedBreak.current = true;
     started.current = true;
     timeoutBreak.current = setTimeout(() => {
       setBreakValue(breakValue - 1);
       startBreakTimer();
     }, 1000);
-    breakValue === 0 ? sessionRestart() : console.log("something went wrong");
+    breakValue === 0 ? sessionRestart() : console.log("Break Timer is running");
   };
 
   const sessionRestart = () => {
     const hid = document.getElementsByClassName("hiddenP");
     hid[0].style.visibility = "hidden";
-    stopTimerBreak();
 
+    const hidStop = document.getElementsByClassName("hiddenCantStop");
+    hidStop[0].style.visibility = "hidden";
+
+    stopTimerBreak();
+    displaySeconds = sValue;
     setSessionValue(sValue);
     setBreakValue(bValue);
     decreaseSessionEachSecond();
@@ -90,6 +99,10 @@ const App = () => {
     setBreakValue(bValue);
     const hid = document.getElementsByClassName("hiddenP");
     hid[0].style.visibility = "hidden";
+
+    const hidStop = document.getElementsByClassName("hiddenCantStop");
+    hidStop[0].style.visibility = "hidden";
+
     clearTimeout(timeout.current);
     clearInterval(timeoutBreak.current);
     setSessionValue(sValue);
@@ -101,11 +114,21 @@ const App = () => {
     clearTimeout(timeoutBreak.current);
   };
   const stopTimerBreak = () => {
+    startedBreak.current = false;
     clearTimeout(timeoutBreak.current);
   };
 
   const handleOnClick = () => {
-    started.current === false ? decreaseSessionEachSecond() : stopTimer();
+    startedBreak.current === true
+      ? revealLazy()
+      : started.current === false
+      ? decreaseSessionEachSecond()
+      : stopTimer();
+  };
+
+  const revealLazy = () => {
+    const hid = document.getElementsByClassName("hiddenCantStop");
+    hid[0].style.visibility = "visible";
   };
 
   const reveal = () => {
@@ -116,9 +139,15 @@ const App = () => {
     console.log(breakValue);
   };
 
-  session === 0 ? stopTimer() : console.log("timer didnt stop");
+  session === 0
+    ? stopTimer()
+    : console.log("Timer is running because session != 0");
 
-  session === 0 ? reveal() : console.log("something will happen");
+  session === 0
+    ? reveal()
+    : console.log(
+        "Not revealing break section!!              --               hi there, reader, have a nice day"
+      );
   //format session
   let seconds = session % 60;
   let minutes = (session % 3600) / 60;
@@ -167,15 +196,11 @@ const App = () => {
   };
 
   const decreaseFiveMinutesBreak = () => {
-    const decreasing = () => {
-      setbValue(bValue - 300);
-      setBreakValue(bValue - 300);
-    };
-    bValue - 300 < 0
-      ? setbValue(0)
-      : started.current === true
-      ? console.log("you cant click this while timer is running")
-      : decreasing();
+    started.current === false
+      ? sValue - 300 < 1
+        ? setsValue(0)
+        : setsValue(sValue - 300)
+      : console.log("you cant change it while running");
   };
 
   const increaseFiveMinutesSession = () => {
@@ -236,6 +261,10 @@ const App = () => {
           TAKE A BREAK. This {breakValue} is the remaining time to continue the
           next session
         </p>
+      </div>
+      <div className="hiddenCantStop">
+        {" "}
+        ⚠️⚠️You cant stop break timer, you lazy boy!⚠️⚠️
       </div>
     </>
   );

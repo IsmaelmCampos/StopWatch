@@ -28,3 +28,11 @@ a{
   justify-content: center;
   color: red;
 }
+
+.hiddenCantStop { 
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  color: red;
+  font-size: medium;
+}
